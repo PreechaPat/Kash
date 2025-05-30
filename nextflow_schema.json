@@ -43,6 +43,25 @@
                 }
             }
         },
+        "module_options": {
+            "title": "Options for modules",
+            "type": "object",
+            "fa_icon": "fas fa-file-import",
+            "description": "Yes",
+            "help_text": "YES",
+            "properties": {
+                "chopper_minlength": {
+                    "type": "number",
+                    "default": 1200,
+                    "description": "Chopper min length"
+                },
+                "chopper_maxlength": {
+                    "type": "number",
+                    "default": 1800,
+                    "description": "Chopper min length"
+                },
+            }
+        },
         "generic_options": {
             "title": "Generic options",
             "type": "object",
