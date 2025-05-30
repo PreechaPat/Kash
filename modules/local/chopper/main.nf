@@ -31,6 +31,8 @@ process CHOPPER {
     chopper \\
         --threads ${task.cpus} \\
         ${fasta_filtering} \\
+        --minlength ${params.chopper_minlength} \\
+        --maxlength ${params.chopper_maxlength} \\
         ${args} | \\
     gzip > ${prefix}.fastq.gz
 
