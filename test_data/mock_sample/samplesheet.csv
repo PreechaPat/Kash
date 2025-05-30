@@ -1,0 +1,4 @@
+sample,fastq
+barcode11,"test_data/mock_sample/barcode11.fq.gz"
+barcode12,"test_data/mock_sample/barcode12.fq.gz"
+barcode13,"test_data/mock_sample/barcode12.fq.gz"
