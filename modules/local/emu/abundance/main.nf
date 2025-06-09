@@ -30,10 +30,14 @@ process EMU_ABUNDANCE {
         abundance \\
         ${args} \\
         --threads ${task.cpus} \\
+        --min-abundance ${params.emu_minabundance} \\
         --db ${db} \\
         ${reads}
 
-    # barcode01_pychopper_q10_rel-abundance-threshold-0.0001.tsv
+    # Overwrite the standard file using threshold file.
+    if [ -f "results/${prefix}_rel-abundance-threshold-${params.emu_minabundance}.tsv" ]; then
+        mv "results/${prefix}_rel-abundance-threshold-${params.emu_minabundance}.tsv" "results/${prefix}_rel-abundance.tsv"
+    fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
