@@ -28,7 +28,9 @@ process EMU_ABUNDANCE {
     """
     emu \\
         abundance \\
-        ${args} \\
+        --keep-files \\
+        --keep-counts \\
+        --keep-read-assignments \\
         --threads ${task.cpus} \\
         --min-abundance ${params.emu_minabundance} \\
         --db ${db} \\

@@ -11,6 +11,10 @@ include { paramsSummaryMultiqc } from '../subworkflows/nf-core/utils_nfcore_pipe
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_kash_pipeline'
 
+// Subworkflow
+include { PREPROCESS_READS } from '../subworkflows/local/preprocess_reads'
+
+include { NANOPLOT } from '../modules/local/nanoplot/main'
 include { CHOPPER } from '../modules/local/chopper/main'
 include { PYCHOPPER } from '../modules/local/pychopper/main'
 include { FASTDB } from '../modules/local/fastdb'
@@ -74,7 +78,7 @@ workflow KASH {
     ch_versions = ch_versions.mix(PRINT_SAMPLESHEET.out.versions.first())
 
     // Doesn't work atm.
-    if (params.mode == 'debug') {
+    if (params.mode == 'download') {
         FASTDB("emu/emudb/2023-03")
         // Provide a dummy MultiQC report if missing
         def dummy_multiqc_report = file("${workflow.workDir}/dummy_multiqc_report.html")
@@ -89,34 +93,27 @@ workflow KASH {
         return null
     }
 
-    //
     // Prepare database
-    //
     FASTDB("emu/emudb/2023-03")
 
-    //
+    // Log quality of each files
+    NANOPLOT(ch_samplesheet)
+
     // Read cleaner
-    //
-    if (params.pychopper_run) {
-        PYCHOPPER(
-            ch_samplesheet
-        )
-        ch_versions = ch_versions.mix(PYCHOPPER.out.versions)
-    }
-
-    ch_fastq_input = params.pychopper_run ? PYCHOPPER.out.fastq : ch_samplesheet
-
-    CHOPPER(
-        ch_fastq_input,
-        file("NONONO", checkIfExists: false),
+    PREPROCESS_READS(
+        ch_samplesheet,
+        Channel.value(params.pychopper_run),
     )
 
-    ch_versions = ch_versions.mix(CHOPPER.out.versions)
+    ch_versions = ch_versions.mix(PREPROCESS_READS.out.versions)
+
 
     EMU_ABUNDANCE(
-        CHOPPER.out.fastq,
+        PREPROCESS_READS.out.fastq,
         FASTDB.out.db_dir,
     )
+
+    // Combine or report individually.
 
     // TODO: Simplify or just remove these multiqc later.
 
