@@ -12,6 +12,9 @@ process PYCHOPPER {
 
     output:
     tuple val(meta), path("*.out.fastq.gz"), emit: fastq
+    tuple val(meta), path("*_report.pdf"), emit: reportpdf, optional: true
+    tuple val(meta), path("*_report.tsv"), emit: reporttsv, optional: true
+    tuple val(meta), path("*_scores.bed"), emit: reportbed, optional: true
     path "versions.yml", emit: versions
 
     when:
@@ -33,6 +36,11 @@ process PYCHOPPER {
         echo '+:MySSP,-MyVNP|-:MyVNP,-MySSP' >> primers.config
         pychopper \\
             ${args} \\
+            -r ${prefix}_report.pdf \\
+            -S ${prefix}_report.tsv \\
+            -w ${prefix}_rescue.fq \\
+            -u ${prefix}_unclassified.fq \\
+            -A ${prefix}_scores.bed \\
             -m edlib -b primers.fasta -c primers.config \\
             -t ${task.cpus} \\
             ${fastq} > ${prefix}.out.fastq"""
