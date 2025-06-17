@@ -12,11 +12,10 @@ process EMU_ABUNDANCE {
     path db
 
     output:
-
-    tuple val(meta), path("results/*_rel-abundance.tsv"), emit: report
-    tuple val(meta), path("results/*read-assignment-distributions.tsv"), emit: assignment_report, optional: true
-    tuple val(meta), path("results/*_emu_alignments.sam"), emit: samfile, optional: true
-    tuple val(meta), path("*.fasta"), emit: unclassified_fa, optional: true
+    tuple val(meta), path("results/${meta.id}/*_rel-abundance.tsv"), emit: report
+    tuple val(meta), path("results/${meta.id}/*read-assignment-distributions.tsv"), emit: assignment_report, optional: true
+    tuple val(meta), path("results/${meta.id}/*_emu_alignments.sam"), emit: samfile, optional: true
+    tuple val(meta), path("results/${meta.id}/*.fasta"), emit: unclassified_fa, optional: true
     path "versions.yml", emit: versions
 
     when:
@@ -25,20 +24,23 @@ process EMU_ABUNDANCE {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def verbose = task.ext.verbose ?: false
+    def verbosityFlags = verbose ? '--keep-files' : ''
     """
     emu \\
         abundance \\
-        --keep-files \\
+        ${verbosityFlags} \\
         --keep-counts \\
         --keep-read-assignments \\
         --threads ${task.cpus} \\
         --min-abundance ${params.emu_minabundance} \\
         --db ${db} \\
+        --output-dir results/${prefix} \\
         ${reads}
 
     # Overwrite the standard file using threshold file.
-    if [ -f "results/${prefix}_rel-abundance-threshold-${params.emu_minabundance}.tsv" ]; then
-        mv "results/${prefix}_rel-abundance-threshold-${params.emu_minabundance}.tsv" "results/${prefix}_rel-abundance.tsv"
+    if [ -f "results/${prefix}/${reads}_rel-abundance-threshold-${params.emu_minabundance}.tsv" ]; then
+        mv "results/${prefix}/${reads}_rel-abundance-threshold-${params.emu_minabundance}.tsv" "results/${prefix}/${reads}_rel-abundance.tsv"
     fi
 
     cat <<-END_VERSIONS > versions.yml
@@ -50,11 +52,13 @@ process EMU_ABUNDANCE {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def verbose = task.ext.verbose ?: false
+    def verbosityFlags = verbose ? '--keep-files' : ''
     """
     mkdir -p results
-    touch results/${prefix}_rel-abundance.tsv
-    touch results/${prefix}_read-asignment-distributions.tsv
-    touch results/${prefix}_emu_alignments.sam
+    touch results/${prefix}/${reads}_rel-abundance.tsv
+    touch results/${prefix}/${reads}_read-asignment-distributions.tsv
+    touch results/${prefix}/${reads}_emu_alignments.sam
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         emu: \$(echo \$(emu --version 2>&1) | sed 's/^.*emu //; s/Using.*\$//' )
