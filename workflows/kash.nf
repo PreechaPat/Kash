@@ -100,9 +100,10 @@ workflow KASH {
     NANOPLOT(ch_samplesheet)
 
     // Read cleaner
+    // This use params.pychopper_run + params.porechop_run
+    // See a better way pass params
     PREPROCESS_READS(
-        ch_samplesheet,
-        Channel.value(params.pychopper_run),
+        ch_samplesheet
     )
 
     ch_versions = ch_versions.mix(PREPROCESS_READS.out.versions)

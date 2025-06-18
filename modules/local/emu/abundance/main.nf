@@ -24,8 +24,8 @@ process EMU_ABUNDANCE {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def verbose = task.ext.verbose ?: false
-    def verbosityFlags = verbose ? '--keep-files' : ''
+    // def verbose = task.ext.verbose ? true : false
+    def verbosityFlags = task.ext.verbose ? '--keep-files' : ''
     """
     emu \\
         abundance \\
