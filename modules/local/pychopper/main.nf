@@ -15,6 +15,7 @@ process PYCHOPPER {
     tuple val(meta), path("*_report.pdf"), emit: reportpdf, optional: true
     tuple val(meta), path("*_report.tsv"), emit: reporttsv, optional: true
     tuple val(meta), path("*_scores.bed"), emit: reportbed, optional: true
+    tuple val(meta), path("pychopper.error.log"), emit: errorlog, optional: true
     path "versions.yml", emit: versions
 
     when:
@@ -43,12 +44,16 @@ process PYCHOPPER {
             -A ${prefix}_scores.bed \\
             -m edlib -b primers.fasta -c primers.config \\
             -t ${task.cpus} \\
-            ${fastq} > ${prefix}.out.fastq"""
+            ${fastq} > ${prefix}.out.fastq \\
+            || (echo '[PYCHOPPER ERROR]' > pychopper.error.log && touch ${prefix}.out.fastq)
+            """
         : """
     pychopper \\
         ${args} \\
         -t ${task.cpus} \\
-        ${fastq} > ${prefix}.out.fastq"""
+        ${fastq} > ${prefix}.out.fastq \\
+        || (echo '[PYCHOPPER ERROR]' > pychopper.error.log && touch ${prefix}.out.fastq)
+        """
 
     """
     ${running}

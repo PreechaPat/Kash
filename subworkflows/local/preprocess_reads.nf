@@ -4,6 +4,22 @@ include { PYCHOPPER } from '../../modules/local/pychopper/main'
 include { CHOPPER } from '../../modules/local/chopper/main'
 include { PORECHOP_ABI } from '../../modules/local/porechop/abi/main'
 
+process COUNT_FILESIZE {
+    tag "${meta.id}"
+    label 'process_low'
+
+    input:
+    tuple val(meta), path(input_file)
+
+    output:
+    tuple val(meta), path(input_file), emit: reads
+    path "versions.yml", emit: versions
+
+    script:
+    def fileSizeBytes = input_file.size()
+    meta = meta + [filesize: fileSizeBytes]
+}
+
 workflow PREPROCESS_READS {
     take:
     samplesheet

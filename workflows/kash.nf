@@ -108,11 +108,12 @@ workflow KASH {
 
     ch_versions = ch_versions.mix(PREPROCESS_READS.out.versions)
 
-
-    EMU_ABUNDANCE(
-        PREPROCESS_READS.out.fastq,
-        FASTDB.out.db_dir,
-    )
+    if (!params.skip_classification) {
+        EMU_ABUNDANCE(
+            PREPROCESS_READS.out.fastq,
+            FASTDB.out.db_dir,
+        )
+    }
 
     // Combine or report individually.
 
