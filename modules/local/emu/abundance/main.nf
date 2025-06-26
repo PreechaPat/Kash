@@ -24,8 +24,9 @@ process EMU_ABUNDANCE {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    // def verbose = task.ext.verbose ? true : false
     def verbosityFlags = task.ext.verbose ? '--keep-files' : ''
+    def readName = reads.getName()
+    def readNameTrim = readName.contains('.') ? readName[0..readName.lastIndexOf('.') - 1] : readName
     """
     emu \\
         abundance \\
@@ -39,8 +40,8 @@ process EMU_ABUNDANCE {
         ${reads}
 
     # Overwrite the standard file using threshold file.
-    if [ -f "results/${prefix}/${reads}_rel-abundance-threshold-${params.emu_minabundance}.tsv" ]; then
-        mv "results/${prefix}/${reads}_rel-abundance-threshold-${params.emu_minabundance}.tsv" "results/${prefix}/${reads}_rel-abundance.tsv"
+    if [ -f "results/${prefix}/${readNameTrim}_rel-abundance-threshold-${params.emu_minabundance}.tsv" ]; then
+        cp "results/${prefix}/${readNameTrim}_rel-abundance-threshold-${params.emu_minabundance}.tsv" "results/${prefix}/${readNameTrim}_rel-abundance.tsv"
     fi
 
     cat <<-END_VERSIONS > versions.yml
