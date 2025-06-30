@@ -79,7 +79,7 @@ workflow KASH {
 
     // Doesn't work atm.
     if (params.mode == 'download') {
-        FASTDB("emu/emudb/2023-03")
+        FASTDB(params.emu_database)
         // Provide a dummy MultiQC report if missing
         def dummy_multiqc_report = file("${workflow.workDir}/dummy_multiqc_report.html")
 
@@ -94,7 +94,15 @@ workflow KASH {
     }
 
     // Prepare database
-    FASTDB("emu/emudb/2023-03")
+    if (params.emu_localdatabase) {
+        log.info("[KASH] Using local database from: ${params.emu_localdatabase}")
+        ch_db_dir = Channel.value(file(params.emu_localdatabase))
+    }
+    else {
+        ("[KASH] Downloading and preparing database from remote: ${params.emu_database}")
+        FASTDB(params.emu_database)
+        ch_db_dir = FASTDB.out.db_dir
+    }
 
     // Log quality of each files
     NANOPLOT(ch_samplesheet)
@@ -111,7 +119,7 @@ workflow KASH {
     if (!params.skip_classification) {
         EMU_ABUNDANCE(
             PREPROCESS_READS.out.fastq,
-            FASTDB.out.db_dir,
+            ch_db_dir,
         )
     }
 
