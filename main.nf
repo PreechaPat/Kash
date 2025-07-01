@@ -44,19 +44,26 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    KASH(
-        PIPELINE_INITIALISATION.out.samplesheet
-    )
-
-    //
-    // SUBWORKFLOW: Run completion tasks
-    //
-    PIPELINE_COMPLETION(
-        params.email,
-        params.email_on_fail,
-        params.plaintext_email,
-        params.outdir,
-        params.monochrome_logs,
-        KASH.out.multiqc_report,
-    )
+    if (params.mode == 'download') {
+        log.info("Download only")
+    }
+    else if (params.mode == 'init') {
+        log.info("Init config")
+    }
+    else {
+        KASH(
+            PIPELINE_INITIALISATION.out.samplesheet
+        )
+        //
+        // SUBWORKFLOW: Run completion tasks
+        //
+        PIPELINE_COMPLETION(
+            params.email,
+            params.email_on_fail,
+            params.plaintext_email,
+            params.outdir,
+            params.monochrome_logs,
+            KASH.out.multiqc_report,
+        )
+    }
 }

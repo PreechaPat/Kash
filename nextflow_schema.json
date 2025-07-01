@@ -60,6 +60,33 @@
                     "default": 1800,
                     "description": "Chopper min length"
                 },
+                "emu_minabundance": {
+                    "type": "number",
+                    "default": 0.0001,
+                    "description": "Min abunbance allow by emu"
+                },
+                "pychopper_fwdprimer": {
+                    "type": "string",
+                    "description": "Primer"
+                },
+                "pychopper_revprimer": {
+                    "type": "string",
+                    "description": "Primer"
+                },
+            }
+        },
+        "flow_options": {
+            "title": "Flow control option",
+            "type": "object",
+            "fa_icon": "fas fa-file-import",
+            "description": "Yes",
+            "help_text": "YES",
+            "properties": {
+                "mode": {
+                    "type": "string",
+                    "enum": ["download", "normal", "init"],
+                    "description": "Test"
+                },
             }
         },
         "generic_options": {
