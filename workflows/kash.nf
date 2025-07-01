@@ -77,22 +77,6 @@ workflow KASH {
     PRINT_SAMPLESHEET(ch_samplesheet)
     ch_versions = ch_versions.mix(PRINT_SAMPLESHEET.out.versions.first())
 
-    // Doesn't work atm.
-    if (params.mode == 'download') {
-        FASTDB(params.emu_database)
-        // Provide a dummy MultiQC report if missing
-        def dummy_multiqc_report = file("${workflow.workDir}/dummy_multiqc_report.html")
-
-        // Only create the dummy file if needed
-        dummy_multiqc_report.text = "<html><body><h1>Dummy MultiQC Report</h1><p>This is a placeholder.</p></body></html>"
-        // Wrap in channel
-        // def ch_multiqc_report = Channel.value(dummy_multiqc_report)
-        // emit:multiqc_report = ch_multiqc_report // channel: /path/to/multiqc_report.html
-        versions = ch_versions
-        // channel: [ path(versions.yml) ]
-        return null
-    }
-
     // Prepare database
     if (params.emu_localdatabase) {
         log.info("[KASH] Using local database from: ${params.emu_localdatabase}")
