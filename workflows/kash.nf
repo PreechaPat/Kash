@@ -62,18 +62,6 @@ workflow KASH {
 
     def workflow_params = getParams()
 
-    //
-    // Collate and save software versions
-    //
-    softwareVersionsToYAML(ch_versions)
-        .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
-            name: 'kash_software_' + 'mqc_' + 'versions.yml',
-            sort: true,
-            newLine: true,
-        )
-        .set { ch_collated_versions }
-
     PRINT_SAMPLESHEET(ch_samplesheet)
     ch_versions = ch_versions.mix(PRINT_SAMPLESHEET.out.versions.first())
 
@@ -105,6 +93,7 @@ workflow KASH {
             PREPROCESS_READS.out.fastq,
             ch_db_dir,
         )
+        ch_versions = ch_versions.mix(EMU_ABUNDANCE.out.versions)
     }
 
     // Combine or report individually.
@@ -139,6 +128,17 @@ workflow KASH {
     ch_methods_description = Channel.value(
         methodsDescriptionText(ch_multiqc_custom_methods_description)
     )
+
+    // Collate and save software versions
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name: 'kash_software_' + 'mqc_' + 'versions.yml',
+            sort: true,
+            newLine: true,
+        )
+        .set { ch_collated_versions }
+
 
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     ch_multiqc_files = ch_multiqc_files.mix(
