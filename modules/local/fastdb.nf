@@ -1,5 +1,6 @@
 process FASTDB {
     label 'need_internet'
+    label 'process_low'
     cpus 1
     memory '2 GB'
 
