@@ -24,7 +24,7 @@ process EMU_ABUNDANCE {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def verbosityFlags = task.ext.verbose ? '--keep-files' : ''
+    def verbosityFlags = params.emu_verbose ? '--keep-files' : ''
     def readName = reads.getName()
     def readNameTrim = readName.contains('.') ? readName[0..readName.lastIndexOf('.') - 1] : readName
     """
