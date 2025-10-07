@@ -1,0 +1,60 @@
+nextflow_process {
+
+    name "Test Process SEQKIT_SAMPLE"
+    script "../main.nf"
+    process "SEQKIT_SAMPLE"
+    tag "modules"
+    tag "modules_nfcore"
+    tag "seqkit"
+    tag "seqkit/sample"
+
+    test("barcode11_sample") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file("${projectDir}/test_data/mock_sample/barcode11.fq.gz")
+                ]
+                """
+            }
+        }
+
+        then {
+            def fileObj = process.out.fasta[0]
+        //    def fasta_lines = path(fileObj).linesGzip
+            assertAll(
+                { assert process.success },
+                { assert file(fileObj).name ==~ /test\.fasta\.gz/ },
+       //         { assert fasta_lines[0].startsWith('>') }
+            )
+        }
+    }
+
+    test("seqkit-sample-stub") {
+        options '-stub'
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file("${projectDir}/test_data/mock_sample/barcode11.fq.gz")
+                ]
+                """
+            }
+        }
+
+        then {
+            def fasta_gz = file(process.out.fasta[0])
+            assertAll(
+                { assert process.success },
+                { assert fasta_gz.name ==~ /test\.fasta\.gz/ },
+            )
+        }
+    }
+}
