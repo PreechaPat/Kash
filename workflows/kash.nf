@@ -19,6 +19,7 @@ include { CHOPPER } from '../modules/local/chopper/main'
 include { PYCHOPPER } from '../modules/local/pychopper/main'
 include { FASTDB } from '../modules/local/fastdb'
 include { EMU_ABUNDANCE } from '../modules/local/emu/abundance/main'
+include { EMU_MERGE } from '../modules/local/emu/combine-outputs/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,6 +98,9 @@ workflow KASH {
     }
 
     // Combine or report individually.
+    EMU_ABUNDANCE.out.report | map { it[1] } | collect | set { report_ch }
+
+    EMU_MERGE(report_ch)
 
     // TODO: Simplify or just remove these multiqc later.
 

@@ -67,11 +67,11 @@
                 },
                 "pychopper_fwdprimer": {
                     "type": "string",
-                    "description": "Primer"
+                    "description": "Forward primer"
                 },
                 "pychopper_revprimer": {
                     "type": "string",
-                    "description": "Primer"
+                    "description": "Reverse primer"
                 },
             }
         },

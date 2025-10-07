@@ -1,0 +1,64 @@
+nextflow_process {
+
+    name "Test Process SEQKIT_STATS"
+    script "../main.nf"
+    process "SEQKIT_STATS"
+    tag "modules"
+    tag "modules_nfcore"
+    tag "seqkit"
+    tag "seqkit/stats"
+
+    test("run_single_read") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file("${projectDir}/test_data/mock_sample/barcode11.fq.gz")
+                ]
+                """
+            }
+        }
+
+        then {
+            def tsv_path = file(process.out.tsv[0])
+            def lines = tsv_path.readLines()
+            assertAll(
+                { assert process.success },
+                { assert tsv_path.name ==~ /test\.seqstats\.tsv/ },
+                { assert lines.size() >= 2 },
+                { assert lines[0].contains('\tformat\t') },
+                { assert lines[1].split('\t').size() == lines[0].split('\t').size() }
+            )
+        }
+    }
+
+    test("seqkit-stats-stub") {
+        options '-stub'
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file("${projectDir}/test_data/mock_sample/barcode11.fq.gz")
+                ]
+                """
+            }
+        }
+
+        then {
+            def tsv_path = file(process.out.tsv[0])
+            def lines = tsv_path.readLines()
+            assertAll(
+                { assert process.success },
+                { assert tsv_path.name ==~ /test\.seqstats\.tsv/ },
+                { assert lines[0].startsWith('file\tformat') }
+            )
+        }
+    }
+}
