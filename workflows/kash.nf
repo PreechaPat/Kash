@@ -19,6 +19,7 @@ include { CHOPPER } from '../modules/local/chopper/main'
 include { PYCHOPPER } from '../modules/local/pychopper/main'
 include { FASTDB } from '../modules/local/fastdb'
 include { EMU_ABUNDANCE } from '../modules/local/emu/abundance/main'
+include { MARK_PATHOGEN } from '../modules/local/mark_pathogen/main'
 include { EMU_MERGE } from '../modules/local/emu/combine-outputs/main'
 
 /*
@@ -95,6 +96,11 @@ workflow KASH {
             ch_db_dir,
         )
         ch_versions = ch_versions.mix(EMU_ABUNDANCE.out.versions)
+
+        MARK_PATHOGEN(
+            EMU_ABUNDANCE.out.report
+        )
+        ch_versions = ch_versions.mix(MARK_PATHOGEN.out.versions)
     }
 
     // Combine or report individually.
