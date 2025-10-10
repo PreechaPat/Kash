@@ -2,8 +2,7 @@ process NANANA_CLUSTER {
     tag "${meta.id}"
     label 'process_high'
 
-    container 'ghcr.io/preechapat/nanana:v0.1.0'
-    containerOptions '-u 0:0'
+    container 'ghcr.io/preechapat/nanana:v0.1.1'
 
     input:
     tuple val(meta), path(fastx)
@@ -20,10 +19,7 @@ process NANANA_CLUSTER {
     def output_name = task.ext.output ?: "${meta.id}.csv"
     def threads = task.cpus ?: 1
     """
-    # // TODO: container option (-u 0:0) is temporary fixed since numba caching at the python's import location...
-    # // but since nextflow run as non-root, numba couldn't cache it without this.
-    # // More permanent fix is to make tmp folder in the image itself...
-
+    # ensure numba use only allow number of amount cache
     export NUMBA_NUM_THREADS="${threads}"
     nanana-cluster \\
         --output ${output_name} \\
