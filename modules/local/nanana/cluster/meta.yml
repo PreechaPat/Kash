@@ -1,0 +1,42 @@
+name: "nanana_cluster"
+description: Cluster reads using nanana-cluster.
+keywords:
+  - clustering
+  - fastx
+  - nanopore
+tools:
+  - "nanana-cluster":
+      description: "Cluster long-read sequences using Nanana."
+      documentation: "https://github.com/preechapat/nanana"
+      args_id: "$args"
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - fastx:
+        type: file
+        description: Long-read sequence file from Chopper.
+        pattern: "*.{fastq.gz}"
+output:
+  - csv:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.csv":
+          type: file
+          description: Cluster summary table for the input reads.
+          pattern: "*.csv"
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@preechapat"
+maintainers:
+  - "@preechapat"

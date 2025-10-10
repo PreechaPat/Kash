@@ -44,9 +44,9 @@ nextflow_process {
                 { assert snapshot(
                     process.out.report,
                     process.out.assignment_report,
-                    process.out.samfile,
                     process.out.versions
                 ).match() },
+                { assert process.out.bamfile && process.out.bamfile[0][1].name.endsWith(".bam") },
     // Match files unclassified_mapped.fasta and unmapped.fasta as they are empty with this test case
                 { assert file(process.out.unclassified_fa[0][1][0]).exists() },
                 { assert file(process.out.unclassified_fa[0][1][1]).exists() }

@@ -48,17 +48,17 @@ output:
       type: map
       description: Output file with read assignment distributions.
       pattern: "*{.tsv}"
-- samfile:
+- bamfile:
   - meta:
       type: map
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
-      pattern: "*{.sam}"
-  - '*.sam':
+      pattern: "*{.bam}"
+  - '*.bam':
       type: map
-      description: Sam alignment file
-      pattern: "*{.sam}"
+      description: BAM alignment file
+      pattern: "*{.bam}"
 - unclassified_fa:
   - meta:
       type: map

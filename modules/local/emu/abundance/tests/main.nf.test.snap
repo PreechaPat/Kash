@@ -21,14 +21,6 @@
                 ]
             ],
             [
-                [
-                    {
-                        "id": "test"
-                    },
-                    "test.fastq_emu_alignments.sam:md5,09f832656b47f44ff22f65ff7ac87824"
-                ]
-            ],
-            [
                 "versions.yml:md5,5227d63df8748de6a8b0c3f212a79512"
             ]
         ],
@@ -57,7 +49,7 @@
                         {
                             "id": "test"
                         },
-                        "test.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
@@ -82,12 +74,12 @@
                         "test.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "samfile": [
+                "bamfile": [
                     [
                         {
                             "id": "test"
                         },
-                        "test.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "unclassified_fa": [

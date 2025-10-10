@@ -19,6 +19,12 @@
                 "exists": true,
                 "pattern": "^\\S+\\.f(ast)?q\\.gz$",
                 "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+            },
+            "type": {
+                "type": "string",
+                "format": "file-path",
+                "enum": ["sample", "positive", "negative"],
+                "meta": ["type"]
             }
         },
         "required": ["sample", "fastq"]
