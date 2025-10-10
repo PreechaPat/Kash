@@ -42,6 +42,9 @@ process MARK_PATHOGEN {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def output_name = meta.id
+    def output_suffix = task.ext.output_suffix ?: "pathogens"
+    def output_file = "${output_name}_${output_suffix}.tsv"
     """
     mkdir -p results/${prefix}
     touch "${output_file}"

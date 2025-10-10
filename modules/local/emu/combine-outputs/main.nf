@@ -28,4 +28,13 @@ process EMU_MERGE {
       mv aggregate_reports/emu-combined-tax_id.tsv combined &&
       mv aggregate_reports/emu-combined-species.tsv combined
     """
+
+    stub:
+    """
+    mkdir -p combined
+    touch combined/emu-combined-tax_id-counts.tsv
+    touch combined/emu-combined-species-counts.tsv
+    touch combined/emu-combined-tax_id.tsv
+    touch combined/emu-combined-species.tsv
+    """
 }
