@@ -13,6 +13,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_kash
 
 // Subworkflow
 include { PREPROCESS_READS } from '../subworkflows/local/preprocess_reads'
+include { POLISHING } from '../subworkflows/local/polishing'
 
 include { NANOPLOT } from '../modules/local/nanoplot/main'
 include { CHOPPER } from '../modules/local/chopper/main'
@@ -90,6 +91,11 @@ workflow KASH {
 
     ch_versions = ch_versions.mix(PREPROCESS_READS.out.versions)
 
+    POLISHING(
+        PREPROCESS_READS.out.fastq
+    )
+    ch_versions = ch_versions.mix(POLISHING.out.versions)
+
     if (!params.skip_classification) {
         EMU_ABUNDANCE(
             PREPROCESS_READS.out.fastq,
@@ -105,8 +111,8 @@ workflow KASH {
 
     // Combine or report individually.
     EMU_ABUNDANCE.out.report | map { it[1] } | collect | set { report_ch }
-
     EMU_MERGE(report_ch)
+
 
     // TODO: Simplify or just remove these multiqc later.
 

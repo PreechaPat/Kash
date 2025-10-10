@@ -44,6 +44,7 @@ process NANOPLOT {
     stub:
     def outdir = "nanoplot_${meta.id}"
     """
+    mkdir ${outdir}
     touch ${outdir}/LengthvsQualityScatterPlot_dot.html
     touch ${outdir}/LengthvsQualityScatterPlot_kde.html
     touch ${outdir}/NanoPlot-report.html

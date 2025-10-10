@@ -12,6 +12,7 @@
   4.1 Rarefaction ( so I would know that we should stop)
   4.2 Read stats ( always keep them )
   4.3 Stats at amplification ( read lenght vs amount )
+5. Add https://github.com/epi2me-labs/wf-metagenomics/blob/master/modules/local/databases.nf
 
 ## QOL
 1. When combine feature tables, fill 0.0 on empty ( since emu didn't do it )

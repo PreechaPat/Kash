@@ -1,4 +1,4 @@
-sample,fastq
-barcode11,"test_data/mock_sample/barcode11.fq.gz"
-barcode12,"test_data/mock_sample/barcode12.fq.gz"
-barcode13,"test_data/mock_sample/barcode13.fq.gz"
+sample,fastq,type
+barcode11,"test_data/mock_sample/barcode11.fq.gz",sample
+barcode12,"test_data/mock_sample/barcode12.fq.gz",sample
+barcode13,"test_data/mock_sample/barcode13.fq.gz",sample
