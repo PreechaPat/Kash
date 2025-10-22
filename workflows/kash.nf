@@ -20,8 +20,9 @@ include { CHOPPER } from '../modules/local/chopper/main'
 include { PYCHOPPER } from '../modules/local/pychopper/main'
 include { FASTDB } from '../modules/local/fastdb'
 include { EMU_ABUNDANCE } from '../modules/local/emu/abundance/main'
-include { MARK_PATHOGEN } from '../modules/local/mark_pathogen/main'
+include { MARK_PATHOGEN } from '../modules/local/hoshi/mark_pathogen/main'
 include { EMU_MERGE } from '../modules/local/emu/combine-outputs/main'
+include { HOSHI_REPORT } from '../modules/local/hoshi/report/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,6 +72,7 @@ workflow KASH {
     // Prepare database
     if (params.emu_localdatabase) {
         log.info("[KASH] Using local database from: ${params.emu_localdatabase}")
+        log.info("[KASH] remote database is skipped")
         ch_db_dir = Channel.value(file(params.emu_localdatabase))
     }
     else {
@@ -83,18 +85,11 @@ workflow KASH {
     NANOPLOT(ch_samplesheet)
 
     // Read cleaner
-    // This use params.pychopper_run + params.porechop_run
-    // See a better way pass params
     PREPROCESS_READS(
         ch_samplesheet
     )
 
     ch_versions = ch_versions.mix(PREPROCESS_READS.out.versions)
-
-    POLISHING(
-        PREPROCESS_READS.out.fastq
-    )
-    ch_versions = ch_versions.mix(POLISHING.out.versions)
 
     if (!params.skip_classification) {
         EMU_ABUNDANCE(
@@ -107,18 +102,39 @@ workflow KASH {
             EMU_ABUNDANCE.out.report
         )
         ch_versions = ch_versions.mix(MARK_PATHOGEN.out.versions)
+
+        // Pair fastq with correct relative abundance using group
+        POLISHING(
+            PREPROCESS_READS.out.fastq
+        )
+        ch_versions = ch_versions.mix(POLISHING.out.versions)
+
+        // Merge
+        EMU_ABUNDANCE.out.report | map { it[1] } | collect | set { report_ch }
+        EMU_MERGE(report_ch)
+
+        // Add info to reports
+        EMU_ABUNDANCE.out.report
+            | branch { v ->
+                sample: v[0].type == "sample"
+                negative: v[0].type == "negative"
+            }
+            | set { split_reports }
+
+        split_reports.sample
+            | map { it -> it[1] }
+            | collect
+            | set { positive_reports }
+
+        HOSHI_REPORT(positive_reports)
     }
 
-    // Combine or report individually.
-    EMU_ABUNDANCE.out.report | map { it[1] } | collect | set { report_ch }
-    EMU_MERGE(report_ch)
-
-
-    // TODO: Simplify or just remove these multiqc later.
+    // TODO: Simplify MultiQC
 
     //
     // MODULE: MultiQC
     //
+
     ch_multiqc_config = Channel.fromPath(
         "${projectDir}/assets/multiqc_config.yml",
         checkIfExists: true
@@ -162,6 +178,14 @@ workflow KASH {
             name: 'methods_description_mqc.yaml',
             sort: true,
         )
+    )
+
+    // Add files from tools
+    ch_multiqc_files = ch_multiqc_files.mix(
+        PREPROCESS_READS.out.multiqc.map { item ->
+            // log.info("[KASH] PREPROCESS_READS.out.multiqc => ${item}") // Debuging
+            item[1]
+        }
     )
 
     MULTIQC(

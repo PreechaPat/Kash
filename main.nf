@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    yumyai/kash
+    PreechaPat/Kash
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/yumyai/kash
+    Github : https://github.com/PreechaPat/Kash
 ----------------------------------------------------------------------------------------
 */
 
@@ -46,6 +46,7 @@ workflow {
         log.info("Init config")
     }
     else {
+        log.info("Initialize main pipeline")
         PIPELINE_INITIALISATION(
             params.version,
             params.validate_params,
@@ -54,6 +55,7 @@ workflow {
             params.outdir,
             params.input,
         )
+        log.info("Starting pipeline")
         KASH(
             PIPELINE_INITIALISATION.out.samplesheet
         )
