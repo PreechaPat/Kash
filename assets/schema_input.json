@@ -22,7 +22,6 @@
             },
             "type": {
                 "type": "string",
-                "format": "file-path",
                 "enum": ["sample", "positive", "negative"],
                 "meta": ["type"]
             }

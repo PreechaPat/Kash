@@ -48,7 +48,13 @@ workflow PREPROCESS_READS {
     )
     ch_versions = ch_versions.mix(CHOPPER.out.versions)
 
+    ch_multiqc = Channel.empty()
+    ch_multiqc = ch_multiqc.mix(PYCHOPPER.out.reporttsv)
+    ch_multiqc = ch_multiqc.mix(PYCHOPPER.out.reportbed)
+    ch_multiqc = ch_multiqc.mix(PYCHOPPER.out.reportpdf)
+
     emit:
     fastq = CHOPPER.out.fastq
     versions = ch_versions
+    multiqc = ch_multiqc
 }

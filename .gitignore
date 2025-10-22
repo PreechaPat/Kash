@@ -6,4 +6,7 @@ results/
 testing/
 testing*
 *.pyc
+.nf-test
 null/
+
+

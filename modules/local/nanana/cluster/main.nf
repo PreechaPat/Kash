@@ -28,7 +28,7 @@ process NANANA_CLUSTER {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        nanana-cluster: \$(nanana-cluster --version 2>/dev/null || echo 'v0.1.0')
+        nanana-cluster: \$(nanana-cluster --version 2>/dev/null || echo 'unknown')
     END_VERSIONS
     """
 
@@ -39,7 +39,7 @@ process NANANA_CLUSTER {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        nanana-cluster: 'v0.1.0'
+        nanana-cluster: \$(nanana --version 2>&1 | cut -d ' ' -f 2)
     END_VERSIONS
     """
 }
