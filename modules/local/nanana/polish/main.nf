@@ -1,0 +1,45 @@
+process NANANA_POLISH {
+    tag "${meta.id}"
+
+    label 'process_high'
+
+    container 'ghcr.io/preechapat/nanana:v0.1.3'
+
+    input:
+    tuple val(meta), path(fastx), path(cluster_tsv), path(assignment_tsv)
+
+    output:
+    tuple val(meta), path("*/output/consensus_c*.fasta"), emit: consensus, optional: true
+    path "versions.yml", emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
+
+    script:
+    def args = task.ext.args ?: ''
+    """
+    nanana-polish \\
+        --tsv ${cluster_tsv} \\
+        --output-root ${meta.id} \\
+        --threads ${task.cpus} \\
+        ${args} \\
+        ${fastx}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        nanana-cluster: \$(nanana-cluster --version 2>/dev/null || echo 'unknown')
+    END_VERSIONS
+    """
+
+    stub:
+    def output_name = task.ext.output ?: "${meta.id}_consensus_c0.fasta"
+    """
+    touch ${output_name}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        nanana-polish: \$(nanana --version 2>&1 | cut -d ' ' -f 2)
+        nanana-hydrate: \$(nanana --version 2>&1 | cut -d ' ' -f 2)
+    END_VERSIONS
+    """
+}
