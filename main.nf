@@ -13,6 +13,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+import java.nio.file.Files
 include { KASH } from './workflows/kash'
 include { FASTDB } from './modules/local/fastdb'
 
@@ -43,7 +44,20 @@ workflow {
         FASTDB(params.emu_database)
     }
     else if (params.mode == 'init') {
-        log.info("Init config")
+        def templatePath = file("${projectDir}/assets/config_template.conf")
+        def targetPath = workflow.launchDir.resolve('nextflow.config')
+
+        if (!Files.exists(templatePath)) {
+            log.error("Missing config template at ${templatePath}")
+            System.exit(1)
+        }
+
+        if (Files.exists(targetPath)) {
+            log.warn("nextflow.config already exists at ${targetPath}; skipping creation")
+        } else {
+            Files.copy(templatePath, targetPath)
+            log.info("Created nextflow.config at ${targetPath}")
+        }
     }
     else {
         log.info("Initialize main pipeline")
