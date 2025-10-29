@@ -33,6 +33,7 @@ process CHOPPER {
         ${fasta_filtering} \\
         --minlength ${params.chopper_minlength} \\
         --maxlength ${params.chopper_maxlength} \\
+        -q ${params.chopper_minq} \\
         ${args} | \\
     gzip > ${prefix}.fastq.gz
 

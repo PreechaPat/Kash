@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/yumyai/kash/master/nextflow_schema.json",
-    "title": "yumyai/kash pipeline parameters",
-    "description": "Amplicon pipeline",
+    "$id": "https://raw.githubusercontent.com/PreechaPat/kash/master/nextflow_schema.json",
+    "title": "PreechaPat/Kash pipeline parameters",
+    "description": "Long-read Amplicon pipeline",
     "type": "object",
     "$defs": {
         "input_output_options": {
@@ -50,6 +50,11 @@
             "description": "Yes",
             "help_text": "YES",
             "properties": {
+                "chopper_minq": {
+                    "type": "number",
+                    "default": 12,
+                    "description": "Quality cut-off for chopper"
+                },
                 "chopper_minlength": {
                     "type": "number",
                     "default": 1200,
@@ -63,7 +68,7 @@
                 "emu_minabundance": {
                     "type": "number",
                     "default": 0.0001,
-                    "description": "Min abunbance allow by emu"
+                    "description": "Min abunbance for each taxa allow by emu"
                 },
                 "pychopper_fwdprimer": {
                     "type": "string",
