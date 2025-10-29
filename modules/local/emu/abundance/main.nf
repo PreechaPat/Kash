@@ -12,10 +12,10 @@ process EMU_ABUNDANCE {
     path db
 
     output:
-    tuple val(meta), path("results/${meta.id}/*_rel-abundance.tsv"), emit: report
-    tuple val(meta), path("results/${meta.id}/*read-assignment-distributions.tsv"), emit: assignment_report, optional: true
-    tuple val(meta), path("results/${meta.id}/*_emu_alignments.bam"), emit: bamfile, optional: true
-    tuple val(meta), path("results/${meta.id}/*.fasta"), emit: unclassified_fa, optional: true
+    tuple val(meta), path("abundances/${meta.id}/*_rel-abundance.tsv"), emit: report
+    tuple val(meta), path("abundances/${meta.id}/*read-assignment-distributions.tsv"), emit: assignment_report, optional: true
+    tuple val(meta), path("abundances/${meta.id}/*_emu_alignments.bam"), emit: bamfile, optional: true
+    tuple val(meta), path("abundances/${meta.id}/*.fasta"), emit: unclassified_fa, optional: true
     path "versions.yml", emit: versions
 
     when:
@@ -36,7 +36,7 @@ process EMU_ABUNDANCE {
         --threads ${task.cpus} \\
         --min-abundance ${params.emu_minabundance} \\
         --db ${db} \\
-        --output-dir results/${prefix} \\
+        --output-dir abundances/${prefix} \\
         ${reads}
 
     export THREADS="${task.cpus}"
@@ -47,7 +47,7 @@ process EMU_ABUNDANCE {
     from pathlib import Path
 
     threads = os.environ.get("THREADS","1")
-    root = Path("results") / os.environ["PREFIX"]
+    root = Path("abundances") / os.environ["PREFIX"]
 
     sam = next(root.glob("*_emu_alignments.sam"), None)
     if sam is None:
@@ -71,8 +71,8 @@ process EMU_ABUNDANCE {
     fi
 
     # Overwrite the standard file using threshold file.
-    if [ -f "results/${prefix}/${readNameTrim}_rel-abundance-threshold-${params.emu_minabundance}.tsv" ]; then
-        cp "results/${prefix}/${readNameTrim}_rel-abundance-threshold-${params.emu_minabundance}.tsv" "results/${prefix}/${readNameTrim}_rel-abundance.tsv"
+    if [ -f "abundances/${prefix}/${readNameTrim}_rel-abundance-threshold-${params.emu_minabundance}.tsv" ]; then
+        cp "abundances/${prefix}/${readNameTrim}_rel-abundance-threshold-${params.emu_minabundance}.tsv" "results/${prefix}/${readNameTrim}_rel-abundance.tsv"
     fi
 
     cat <<-END_VERSIONS > versions.yml
@@ -85,10 +85,10 @@ process EMU_ABUNDANCE {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    mkdir -p results/${prefix}
-    touch results/${prefix}/${reads}_rel-abundance.tsv
-    touch results/${prefix}/${reads}_read-asignment-distributions.tsv
-    touch results/${prefix}/${reads}_emu_alignments.bam
+    mkdir -p abundances/${prefix}
+    touch abundances/${prefix}/${reads}_rel-abundance.tsv
+    touch abundances/${prefix}/${reads}_read-asignment-distributions.tsv
+    touch abundances/${prefix}/${reads}_emu_alignments.bam
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         emu: \$(echo \$(emu --version 2>&1) | sed 's/^.*emu //; s/Using.*\$//' )
