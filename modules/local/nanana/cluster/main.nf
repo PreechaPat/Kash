@@ -23,6 +23,7 @@ process NANANA_CLUSTER {
     export NUMBA_NUM_THREADS="${threads}"
     nanana-cluster \\
         --output ${output_name} \\
+        --threads ${threads} \\
         ${args} \\
         ${fastx}
 
