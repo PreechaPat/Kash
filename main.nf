@@ -61,7 +61,7 @@ workflow {
     }
     else {
         log.info("Initialize main pipeline")
-        def rootConfig = file("${System.getenv('HOME')}/.jim")
+        def rootConfig = file("${System.getenv('HOME')}/.kash")
         rootConfig.mkdirs()
         PIPELINE_INITIALISATION(
             params.version,
