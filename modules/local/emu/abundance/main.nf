@@ -72,7 +72,7 @@ process EMU_ABUNDANCE {
 
     # Overwrite the standard file using threshold file.
     if [ -f "abundances/${prefix}/${readNameTrim}_rel-abundance-threshold-${params.emu_minabundance}.tsv" ]; then
-        cp "abundances/${prefix}/${readNameTrim}_rel-abundance-threshold-${params.emu_minabundance}.tsv" "results/${prefix}/${readNameTrim}_rel-abundance.tsv"
+        cp "abundances/${prefix}/${readNameTrim}_rel-abundance-threshold-${params.emu_minabundance}.tsv" "abundances/${prefix}/${readNameTrim}_rel-abundance.tsv"
     fi
 
     cat <<-END_VERSIONS > versions.yml
