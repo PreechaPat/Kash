@@ -65,6 +65,7 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
+    // TODO: Check this later why does it work although we have not put any "type" to it.
     Channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
         .map { meta, fastq ->
             return [meta.id, meta + [single_end: true], fastq]

@@ -106,7 +106,7 @@ workflow KASH {
         // Pair fastq with correct relative abundance using group
         POLISHING(
             PREPROCESS_READS.out.fastq,
-            EMU_ABUNDANCE.out.assignment_report
+            EMU_ABUNDANCE.out.assignment_report,
         )
         ch_versions = ch_versions.mix(POLISHING.out.versions)
 

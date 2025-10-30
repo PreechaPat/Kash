@@ -2,7 +2,7 @@ process NANANA_CLUSTER {
     tag "${meta.id}"
     label 'process_high'
 
-    container 'ghcr.io/preechapat/nanana:v0.1.2'
+    container 'ghcr.io/preechapat/nanana:v0.1.3'
 
     input:
     tuple val(meta), path(fastx)

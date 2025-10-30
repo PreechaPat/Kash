@@ -26,6 +26,6 @@
                 "meta": ["type"]
             }
         },
-        "required": ["sample", "fastq"]
+        "required": ["sample", "fastq", "type"]
     }
 }
