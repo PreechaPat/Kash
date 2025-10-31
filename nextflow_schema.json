@@ -78,6 +78,11 @@
                     "type": "string",
                     "description": "Reverse primer"
                 },
+                "emu_database": {
+                    "type": "string",
+                    "enum": ["emu/emudb/2023-03", "emu/silva/2023-03"],
+                    "description": "Emu's database to use"
+                },
             }
         },
         "flow_options": {
@@ -90,7 +95,7 @@
                 "mode": {
                     "type": "string",
                     "enum": ["download", "normal", "init"],
-                    "description": "Test"
+                    "description": "For controlling the behavior"
                 },
             }
         },

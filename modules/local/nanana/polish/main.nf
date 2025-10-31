@@ -9,7 +9,7 @@ process NANANA_POLISH {
     tuple val(meta), path(fastx), path(cluster_tsv), path(assignment_tsv)
 
     output:
-    tuple val(meta), path("*/output/consensus_c*.fasta"), emit: consensus, optional: true
+    tuple val(meta), path("${meta.id}/output/consensus_c*.fasta"), path("${meta.id}/output/cluster_*.fastq.gz"), emit: consensus, optional: true
     path "versions.yml", emit: versions
 
     when:
@@ -21,25 +21,29 @@ process NANANA_POLISH {
     nanana-polish \\
         --tsv ${cluster_tsv} \\
         --output-root ${meta.id} \\
+        --keep-fastq \\
         --threads ${task.cpus} \\
         ${args} \\
         ${fastx}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        nanana-cluster: \$(nanana-cluster --version 2>/dev/null || echo 'unknown')
+        nanana-polish: \$(nanana-polish --version 2>/dev/null || echo 'unknown')
     END_VERSIONS
     """
 
     stub:
-    def output_name = task.ext.output ?: "${meta.id}_consensus_c0.fasta"
+    def coutput_name = task.ext.output ?: "${meta.id}/output/consensus_c0.fasta"
+    def fqoutput_name = task.ext.output ?: "${meta.id}/output/cluster_c00.fastq.gz"
     """
-    touch ${output_name}
+
+    mkdir -p ${meta.id}/output/
+    touch ${coutput_name}
+    touch ${fqoutput_name}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         nanana-polish: \$(nanana --version 2>&1 | cut -d ' ' -f 2)
-        nanana-hydrate: \$(nanana --version 2>&1 | cut -d ' ' -f 2)
     END_VERSIONS
     """
 }
