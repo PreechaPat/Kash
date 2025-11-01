@@ -84,11 +84,13 @@ process EMU_ABUNDANCE {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def readName = reads.getName()
+    def readNameTrim = readName.contains('.') ? readName[0..readName.lastIndexOf('.') - 1] : readName
     """
     mkdir -p abundances/${prefix}
-    touch abundances/${prefix}/${reads}_rel-abundance.tsv
-    touch abundances/${prefix}/${reads}_read-asignment-distributions.tsv
-    touch abundances/${prefix}/${reads}_emu_alignments.bam
+    touch abundances/${prefix}/${readNameTrim}_rel-abundance.tsv
+    touch abundances/${prefix}/${readNameTrim}_read-asignment-distributions.tsv
+    touch abundances/${prefix}/${readNameTrim}_emu_alignments.bam
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         emu: \$(echo \$(emu --version 2>&1) | sed 's/^.*emu //; s/Using.*\$//' )

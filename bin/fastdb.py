@@ -49,8 +49,8 @@ EMBEDDED_DATABASES = {
         },
         "silva": {
             "2023-03": {
-                "url": "https://osf.io/download/8w2qx/",
-                "md5": "ff95e68f1768a1ce8b07354b4ad067b2",
+                "url": "https://osf.io/nfrgs/download",
+                "md5": "5899619bcd73e480a08e5f06911feeae",
                 "filename": "silva_database.tar.gz"
             }
         }

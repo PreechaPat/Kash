@@ -130,7 +130,7 @@ workflow KASH {
         HOSHI_REPORT(positive_reports)
     }
 
-    // TODO: Simplify MultiQC
+    // TODO: Simplify MultiQC call. The boilerplate is generic so complicate.
 
     //
     // MODULE: MultiQC
